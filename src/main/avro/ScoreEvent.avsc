@@ -1,0 +1,10 @@
+{
+  "type": "record",
+  "namespace": "video.game",
+  "name": "ScoreEvent",
+  "fields": [
+    {"name":  "productId", "type": "long"},
+    {"name":  "playerId", "type": "long"},
+    {"name":  "score", "type": "long"}
+  ]
+}

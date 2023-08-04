@@ -1,0 +1,9 @@
+{
+  "type": "record",
+  "namespace": "video.game",
+  "name": "Product",
+  "fields": [
+    {"name":  "id", "type": "long"},
+    {"name":  "name", "type": "string"}
+  ]
+}
