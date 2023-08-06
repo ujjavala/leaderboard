@@ -2,24 +2,29 @@ package video.game.leaderboard.kafka.producers
 
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.event.ApplicationStartedEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
-import video.game.Product
-
+import video.game.Player
 
 @Component
-class ProductProducer (
-    private val kafkaTemplate: KafkaTemplate<String, Product>
+class PlayerRepository(
+    private val kafkaTemplate: KafkaTemplate<String, Player>,
+    @Value("\${topics.players.name}") private val playersTopic: String
 ) : ApplicationListener<ApplicationStartedEvent> {
-    private val logger = LoggerFactory.getLogger(ProductProducer::class.java)
+    private val logger = LoggerFactory.getLogger(PlayerRepository::class.java)
 
     override fun onApplicationEvent(event: ApplicationStartedEvent) {
-        val products = listOf(Product(1,"avenger 1"), Product(2,"avenger 2"),Product(3,"avenger 3"))
-        products.forEach {
-            val record = ProducerRecord("products-topic", it.id.toString(), it)
-            logger.info("Generated record {} for product", record)
+        populatePlayers()
+    }
+
+    private fun populatePlayers() {
+        val players = listOf(Player(1, "iron man"), Player(2, "captain america"), Player(3, "hulk"))
+        players.forEach {
+            val record = ProducerRecord(playersTopic, it.id.toString(), it)
+            logger.info("Generated record for player{}", record)
             kafkaTemplate
                 .send(record)
                 .whenComplete { result, error ->
@@ -32,5 +37,4 @@ class ProductProducer (
 
         }
     }
-
 }
